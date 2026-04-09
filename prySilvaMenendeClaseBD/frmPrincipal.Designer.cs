@@ -28,13 +28,44 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
+            this.cmbTablas = new System.Windows.Forms.ComboBox();
+            this.cmbBD = new System.Windows.Forms.ComboBox();
+            this.SuspendLayout();
+            // 
+            // cmbTablas
+            // 
+            this.cmbTablas.FormattingEnabled = true;
+            this.cmbTablas.Location = new System.Drawing.Point(178, 214);
+            this.cmbTablas.Name = "cmbTablas";
+            this.cmbTablas.Size = new System.Drawing.Size(221, 21);
+            this.cmbTablas.TabIndex = 0;
+            // 
+            // cmbBD
+            // 
+            this.cmbBD.FormattingEnabled = true;
+            this.cmbBD.Location = new System.Drawing.Point(178, 100);
+            this.cmbBD.Name = "cmbBD";
+            this.cmbBD.Size = new System.Drawing.Size(221, 21);
+            this.cmbBD.TabIndex = 1;
+            // 
+            // Form1
+            // 
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 450);
-            this.Text = "Form1";
+            this.ClientSize = new System.Drawing.Size(623, 450);
+            this.Controls.Add(this.cmbBD);
+            this.Controls.Add(this.cmbTablas);
+            this.Name = "Form1";
+            this.Text = "Principal";
+            this.Load += new System.EventHandler(this.Form1_Load);
+            this.ResumeLayout(false);
+
         }
 
         #endregion
+
+        private System.Windows.Forms.ComboBox cmbTablas;
+        private System.Windows.Forms.ComboBox cmbBD;
     }
 }
 
