@@ -8,20 +8,105 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static prySilvaMenendeClaseBD.claseConexionBD;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.TextBox;
 
 namespace prySilvaMenendeClaseBD
 {
-    public partial class Form1 : Form
+    public partial class frmPrincipal : Form
     {
-        public Form1()
+        BaseDeDatos bd = new BaseDeDatos();
+        public frmPrincipal()
         {
             InitializeComponent();
         }
 
-        private void Form1_Load(object sender, EventArgs e)
+        private void frmPrincipal_Load(object sender, EventArgs e)
         {
-            
+            string carpeta = @"C:\BaseDeDatos";
+
+            if (!Directory.Exists(carpeta))
+                return;
+
+            var archivos = Directory.GetFiles(carpeta, "*.*")
+                .Where(f => f.EndsWith(".mdb") || f.EndsWith(".accdb"))
+                .ToArray();
+
+            cmbBD.Items.Clear();
+
+            foreach (var archivo in archivos)
+            {
+                string nombre = Path.GetFileNameWithoutExtension(archivo);
+
+                // sacar el número inicial (ej: 2_)
+                if (nombre.Contains("_"))
+                    nombre = nombre.Substring(nombre.IndexOf("_") + 1);
+
+                cmbBD.Items.Add(nombre);
+            }
+        }
+        
+        private void CargarTablas()
+        {
+            DataTable tablas = bd.CNN.GetSchema("Tables");
+
+            cmbTablas.Items.Clear();
+
+            foreach (DataRow row in tablas.Rows)
+            {
+                string nombre = row["TABLE_NAME"].ToString();
+
+                if (!nombre.StartsWith("MSys"))
+                    cmbTablas.Items.Add(nombre);
+            }
+        }
+        private string ObtenerCadenaConexion(string ruta)
+        {
+            string ext = Path.GetExtension(ruta).ToLower();
+
+            if (ext == ".mdb")
+                return $"Provider=Microsoft.Jet.OLEDB.4.0;Data Source={ruta}";
+
+            if (ext == ".accdb")
+                return $"Provider=Microsoft.ACE.OLEDB.12.0;Data Source={ruta}";
+
+            return null;
+        }
+
+        private void cmbBD_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            string nombre = cmbBD.SelectedItem.ToString();
+            string carpeta = @"C:\BaseDeDatos";
+            string archivo = Directory.GetFiles(carpeta, "*.*")
+                .FirstOrDefault(f => Path.GetFileNameWithoutExtension(f).Contains(nombre));
+
+            string ruta = archivo;
+            string cadena = ObtenerCadenaConexion(ruta);
+
+            if (cadena == null)
+            {
+                MessageBox.Show("Formato no soportado");
+                return;
+            }
+
+            if (bd.Conectar(cadena))
+            {
+                CargarTablas();
+            }
+            else
+            {
+                MessageBox.Show(bd.ERROR);
+            }
+        }
+
+        private void cmbTablas_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            string tabla = cmbTablas.SelectedItem.ToString();
+
+            DataTable datos = bd.Consultar($"SELECT * FROM [{tabla}]");
+
+            dataGridView1.DataSource = datos;
         }
     }
 }
