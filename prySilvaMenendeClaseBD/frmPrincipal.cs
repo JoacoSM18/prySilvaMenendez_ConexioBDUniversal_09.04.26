@@ -106,7 +106,7 @@ namespace prySilvaMenendeClaseBD
 
             DataTable datos = bd.Consultar($"SELECT * FROM [{tabla}]");
 
-            dataGridView1.DataSource = datos;
+            dgvDatos.DataSource = datos;
         }
     }
 }
