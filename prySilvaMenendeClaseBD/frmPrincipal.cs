@@ -24,7 +24,7 @@ namespace prySilvaMenendeClaseBD
 
         private void frmPrincipal_Load(object sender, EventArgs e)
         {
-            string carpeta = @"C:\BaseDeDatos";
+            string carpeta = Path.Combine(Application.StartupPath, "Datos");
 
             if (!Directory.Exists(carpeta))
                 return;
@@ -77,7 +77,7 @@ namespace prySilvaMenendeClaseBD
         private void cmbBD_SelectedIndexChanged(object sender, EventArgs e)
         {
             string nombre = cmbBD.SelectedItem.ToString();
-            string carpeta = @"C:\BaseDeDatos";
+            string carpeta = Path.Combine(Application.StartupPath, "Datos");
             string archivo = Directory.GetFiles(carpeta, "*.*")
                 .FirstOrDefault(f => Path.GetFileNameWithoutExtension(f).Contains(nombre));
 
