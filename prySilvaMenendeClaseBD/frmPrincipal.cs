@@ -38,8 +38,6 @@ namespace prySilvaMenendeClaseBD
             foreach (var archivo in archivos)
             {
                 string nombre = Path.GetFileNameWithoutExtension(archivo);
-
-                // sacar el número inicial (ej: 2_)
                 if (nombre.Contains("_"))
                     nombre = nombre.Substring(nombre.IndexOf("_") + 1);
 
@@ -86,7 +84,7 @@ namespace prySilvaMenendeClaseBD
 
             if (cadena == null)
             {
-                MessageBox.Show("Formato no soportado");
+                MessageBox.Show("Formato No Soportado");
                 return;
             }
 
