@@ -24,27 +24,39 @@ namespace prySilvaMenendeClaseBD
 
         private void frmPrincipal_Load(object sender, EventArgs e)
         {
-            string carpeta = Path.Combine(Application.StartupPath, "Datos");
+           
+        }
 
-            if (!Directory.Exists(carpeta))
-                return;
+        private void btnElegirBD_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog ofd = new OpenFileDialog();
 
-            var archivos = Directory.GetFiles(carpeta, "*.*")
-                .Where(f => f.EndsWith(".mdb") || f.EndsWith(".accdb"))
-                .ToArray();
+            ofd.Filter = "Bases de datos (*.mdb;*.accdb)|*.mdb;*.accdb";
 
-            cmbBD.Items.Clear();
-
-            foreach (var archivo in archivos)
+            if (ofd.ShowDialog() == DialogResult.OK)
             {
-                string nombre = Path.GetFileNameWithoutExtension(archivo);
-                if (nombre.Contains("_"))
-                    nombre = nombre.Substring(nombre.IndexOf("_") + 1);
+                string ruta = ofd.FileName;
+                string cadena = ObtenerCadenaConexion(ruta);
 
-                cmbBD.Items.Add(nombre);
+                if (cadena == null)
+                {
+                    MessageBox.Show("Formato No Soportado");
+                    return;
+                }
+
+                if (bd.Conectar(cadena))
+                {
+                    cmbTablas.Items.Clear();
+                    dgvDatos.DataSource = null;
+                    CargarTablas();
+                }
+                else
+                {
+                    MessageBox.Show(bd.ERROR);
+                }
             }
         }
-        
+
         private void CargarTablas()
         {
             DataTable tablas = bd.CNN.GetSchema("Tables");
@@ -71,33 +83,6 @@ namespace prySilvaMenendeClaseBD
 
             return null;
         }
-
-        private void cmbBD_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            string nombre = cmbBD.SelectedItem.ToString();
-            string carpeta = Path.Combine(Application.StartupPath, "Datos");
-            string archivo = Directory.GetFiles(carpeta, "*.*")
-                .FirstOrDefault(f => Path.GetFileNameWithoutExtension(f).Contains(nombre));
-
-            string ruta = archivo;
-            string cadena = ObtenerCadenaConexion(ruta);
-
-            if (cadena == null)
-            {
-                MessageBox.Show("Formato No Soportado");
-                return;
-            }
-
-            if (bd.Conectar(cadena))
-            {
-                CargarTablas();
-            }
-            else
-            {
-                MessageBox.Show(bd.ERROR);
-            }
-        }
-
         private void cmbTablas_SelectedIndexChanged(object sender, EventArgs e)
         {
             string tabla = cmbTablas.SelectedItem.ToString();
