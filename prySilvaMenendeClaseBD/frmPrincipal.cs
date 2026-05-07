@@ -30,9 +30,10 @@ namespace prySilvaMenendeClaseBD
         private void btnElegirBD_Click(object sender, EventArgs e)
         {
             OpenFileDialog ofd = new OpenFileDialog();
-
             ofd.Filter = "Bases de datos (*.mdb;*.accdb)|*.mdb;*.accdb";
-
+            ofd.InitialDirectory = Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
+                @"source\repos\prySilvaMenendez_ConexionBDUniversal_09.04.26\prySilvaMenendeClaseBD\Datos");
             if (ofd.ShowDialog() == DialogResult.OK)
             {
                 string ruta = ofd.FileName;
